@@ -1,7 +1,7 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 
-from .models import AddressBook
+from .models import AddressBook, Entry
 
 
 class AddressBookSerializer(serializers.ModelSerializer):
@@ -18,3 +18,12 @@ class AddressBookSerializer(serializers.ModelSerializer):
         addressbook_exists = AddressBook.objects.filter(owner=user).exists()
         if addressbook_exists:
             raise ValidationError('Address book has been alredy created')
+
+
+class EntrySerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Entry
+        fields = ('id', 'first_name', 'last_name', 'mobile_number', 'address',
+                  'email')
