@@ -24,8 +24,9 @@ class AddressBookCreationTest(BaseUserTestMixin, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_creation_when_does_not_exist(self):
-        self.client.post(self.url, {})
+        response = self.client.post(self.url, {})
 
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
             AddressBook.objects.filter(owner=self.user).count(), 1)
 
@@ -36,5 +37,14 @@ class AddressBookCreationTest(BaseUserTestMixin, APITestCase):
         response = self.client.post(self.url, {})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            AddressBook.objects.filter(owner=self.user).count(), 1)
+
+    def test_creation_when_not_owned_exist(self):
+        AddressBookFactory()
+
+        response = self.client.post(self.url, {})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
             AddressBook.objects.filter(owner=self.user).count(), 1)
