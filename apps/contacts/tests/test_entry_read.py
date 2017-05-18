@@ -6,7 +6,7 @@ from utils.tests import BaseUserTestMixin
 from .factories import AddressBookFactory, EntryFactory
 
 
-class EntryreadingTest(BaseUserTestMixin, APITestCase):
+class EntryReadTest(BaseUserTestMixin, APITestCase):
     def setUp(self):
         super().setUp()
         self.client.login(
@@ -17,7 +17,7 @@ class EntryreadingTest(BaseUserTestMixin, APITestCase):
     def _make_url(self, pk):
         return reverse('contacts:entry-detail', args=[pk])
 
-    def test_reading_forbidden_for_guests(self):
+    def test_read_forbidden_for_guests(self):
         self.client.logout()
         address_book = AddressBookFactory(owner=self.user)
         entry = EntryFactory(address_book=address_book)
@@ -27,7 +27,7 @@ class EntryreadingTest(BaseUserTestMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_reading_others_entry(self):
+    def test_read_others_entry(self):
         address_book = AddressBookFactory()
         entry = EntryFactory(address_book=address_book)
         url = self._make_url(entry.pk)
@@ -36,7 +36,7 @@ class EntryreadingTest(BaseUserTestMixin, APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_reading_own_entry(self):
+    def test_read_own_entry(self):
         address_book = AddressBookFactory(owner=self.user)
         entry = EntryFactory(address_book=address_book)
         url = self._make_url(entry.pk)

@@ -6,7 +6,7 @@ from utils.tests import BaseUserTestMixin
 from .factories import AddressBookFactory, EntryFactory
 
 
-class EntryListingTest(BaseUserTestMixin, APITestCase):
+class EntryListTest(BaseUserTestMixin, APITestCase):
     def setUp(self):
         super().setUp()
         self.url = reverse('contacts:entry-list')
@@ -15,14 +15,14 @@ class EntryListingTest(BaseUserTestMixin, APITestCase):
             password=self.user_password,
         )
 
-    def test_listing_forbidden_for_guests(self):
+    def test_list_forbidden_for_guests(self):
         self.client.logout()
 
         response = self.client.post(self.url, {})
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_listing_only_owned_entries_listed(self):
+    def test_list_only_owned_entries_listed(self):
         address_book = AddressBookFactory(owner=self.user)
         owned_entry = EntryFactory(address_book=address_book)
         EntryFactory()
@@ -33,7 +33,7 @@ class EntryListingTest(BaseUserTestMixin, APITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], owned_entry.id)
 
-    def test_listing_without_address_book(self):
+    def test_list_without_address_book(self):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
