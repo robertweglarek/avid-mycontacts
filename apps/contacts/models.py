@@ -3,7 +3,8 @@ from django.db import models
 
 
 class AddressBook(models.Model):
-    owner = models.OneToOneField(settings.AUTH_USER_MODEL)
+    owner = models.OneToOneField(settings.AUTH_USER_MODEL,
+                                 related_name='address_book')
 
     def __str__(self):
         return self.owner.username

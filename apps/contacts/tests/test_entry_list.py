@@ -18,7 +18,7 @@ class EntryListTest(BaseUserTestMixin, APITestCase):
     def test_list_forbidden_for_guests(self):
         self.client.logout()
 
-        response = self.client.post(self.url, {})
+        response = self.client.get(self.url, {})
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

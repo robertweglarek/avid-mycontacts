@@ -17,7 +17,7 @@ class AddressBookSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         addressbook_exists = AddressBook.objects.filter(owner=user).exists()
         if addressbook_exists:
-            raise ValidationError('Address book has been alredy created')
+            raise ValidationError('Address book has been alredy created.')
 
 
 class EntrySerializer(serializers.ModelSerializer):
@@ -27,3 +27,18 @@ class EntrySerializer(serializers.ModelSerializer):
         model = Entry
         fields = ('id', 'first_name', 'last_name', 'mobile_number', 'address',
                   'email')
+
+    def validate(self, data):
+        self._ensure_addressbook_exists()
+        return data
+
+    def _ensure_addressbook_exists(self):
+        user = self.context['request'].user
+        addressbook_exists = AddressBook.objects.filter(owner=user).exists()
+        if not addressbook_exists:
+            raise ValidationError('No address book found. Create it first.')
+
+    def create(self, validated_data):
+        address_book = self.context['request'].user.address_book
+        validated_data['address_book'] = address_book
+        return super().create(validated_data)

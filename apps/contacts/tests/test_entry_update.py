@@ -6,7 +6,7 @@ from utils.tests import BaseUserTestMixin
 from .factories import AddressBookFactory, EntryFactory
 
 
-class EntryReadTest(BaseUserTestMixin, APITestCase):
+class EntryUpdateTest(BaseUserTestMixin, APITestCase):
     def setUp(self):
         super().setUp()
         self.client.login(
